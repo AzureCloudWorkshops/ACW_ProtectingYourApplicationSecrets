@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ImageDetail>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Welcome!</h1>
+        <h2>This is the home page for protecting your secrets!</h2>
+    </div>
+</div>
+@if (ViewBag.ShowStorage)
+{
+    <div class="row">
+        <hr style="width:4px;" />
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            Storage Account Name: 
+        </div>
+        <div class="col-md-9">
+            <input type="text" readonly disabled value="@ViewBag.StorageAccountName" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            Storage Container Name:
+        </div>
+        <div class="col-md-9">
+            <input type="text" readonly disabled value="@ViewBag.StorageContainerName" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            Storage Account SAS Token:
+        </div>
+        <div class="col-md-9">
+            <input type="text" readonly disabled value="@ViewBag.storageAccountSASToken" />
+        </div>
+    </div>
+    @foreach (var image in Model)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <img src="@image.ImageFullPath" alt="@image.AltText" style="max-height:500px" />
+            </div>
+            <div class="col-md-12">
+                <label style="font-style:italic; font-size:14px;">@image.Description</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"></div>
+        </div>
+    }
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Please Log in to see information</h3>
+        </div>
+    </div>
+
+}
