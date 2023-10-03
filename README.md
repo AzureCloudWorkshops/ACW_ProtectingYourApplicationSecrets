@@ -85,6 +85,10 @@ One additional important step is to sanitize your logs.  This is a simple proces
 
 - [Part 4 - Sanitize your logs](Part4-SanitizeLogs.md)
 
+## Slides
+
+If you would like, [you can download the slides](https://talkimages.blob.core.windows.net/protectingsecrets/ProtectYourSecrets.pptx)  
+
 ## Conclusion
 
 In this walkthrough, you learned how to protect your secrets in your code, and how to use Azure App Configuration and Azure Key Vault to store and manage your secrets, and you examined a way to ensure that secrets are not accidentally published to GitHub or your application logs.
