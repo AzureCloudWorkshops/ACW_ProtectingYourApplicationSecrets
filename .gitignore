@@ -475,3 +475,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/resources/Starter/MVCProtectingSecrets/Properties/ServiceDependencies/local/appInsights1.arm.json
+/resources/Starter/MVCProtectingSecrets/Properties/serviceDependencies.local.json
