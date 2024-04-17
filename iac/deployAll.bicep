@@ -49,7 +49,7 @@ param sqlServerAdminLogin string = 'secretweb_user'
 
 @description('Admin Password for the SQL Server')
 @secure()
-param sqlServerAdminPassword string = 'Azure#54321!'
+param sqlServerAdminPassword string
 
 targetScope = 'subscription'
 
