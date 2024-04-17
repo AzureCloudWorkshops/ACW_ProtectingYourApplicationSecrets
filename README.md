@@ -25,6 +25,8 @@ You will need a GitHub repository to store your solution and set up CI/CD to Azu
 
 Alternatively, you could right-click and publish your solution to Azure from your desktop, but this walkthrough will focus on GitHub Actions as the deployment mechanism.
 
+>**Note:** As of February of 2024, changes in Azure App service require that you enable *SCM* deployments if you want to right-click and publish.  Additionally, the ability to publish from GitHub actions using the publish profile is affected.  As such, the recommended method is to use the GitHub Actions deployment method and create a *User-Assigned Managed Identity* for the GitHub Actions workflow, with federated credentials.
+
 ## Deploy the IAC
 
 A number of resources are needed to complete this walkthrough, and can be deployed using the templates in the `iac` folder of this repository.
