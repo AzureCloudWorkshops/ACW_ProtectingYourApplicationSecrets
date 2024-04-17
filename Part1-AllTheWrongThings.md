@@ -19,11 +19,33 @@ You can either fork this repository, or just download the repository as a zip fi
 1. [Create a new GitHub Repository](https://docs.github.com/en/get-started/quickstart/create-a-repo)  
 1. [Push the starter code to the repository](https://gist.github.com/c0ldlimit/4089101) 
 
-## Both Options
+## Ensure the code is working
 
-With your code in your repo, publish it to Azure App Service using the following learn documentation.
+After downloading the code, open the solution in Visual Studio and run the application.  
 
-1. [Create CI/CD to publish to your Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/deploy-local-git?tabs=cli)  
+Navigate to the link to migrate the database, which should be something like:
+
+```https:
+https://localhost:7213/home/migratedatabase
+```  
+
+Ensure you can register a user and log in, which you will need to do to be able to see the images (it is assumed you have enough experience to complete this task with minimal guidance).
+
+![](images/Part1/image0000-homepagelocalaftermigrationandregisteruser.png)
+
+>**Note:** you will not see images until you configure your repo secrets for the storage account.
+
+1. Push your code to your repository
+
+Make sure the initial files are in your repo for deployment and settings updates (once again, it's assumed you can get code to your repo with minimal guidance).
+
+![Initial GitHub Files](images/Part1/image0000-repoafterinitialfilepush.png)  
+
+## Publish
+
+With your code in your repo, publish it to Azure App Service using the following cloud workshop:
+
+[Deploy App Service to Azure via GitHub Actions](https://github.com/AzureCloudWorkshops/ACW_DeployAppServiceToAzureViaGitHubActions)  
 
 ### Completion check
 
@@ -32,6 +54,7 @@ Before moving on, ensure that you have the following:
 - A published Azure App Service that is displaying the website but you can't register or log in because no database information is configured.  Even if you could you have not configured the storage account information yet so that part would fail.
 
 ![Deployed Web](images/Part1/image0001-deployedweb.png)  
+
 ## Task 1 - Enable Repository Security tools
 
 One of the most important things you can do to protect your secrets is to enable repository security tools.
