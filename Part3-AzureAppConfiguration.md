@@ -162,6 +162,13 @@ If you didn't want to do key vault right away, you would need to remove the key 
 
     ![](images/Part3/image0015-appconfigurationtokeyvaultworking.png)  
 
+1. Remove the SAS token from the `Environment Variables` in the App Service configuration settings.
+
+    Even with the token gone, you should still be able to see the images on the website.  This is because the SAS token is now being retrieved from the App Configuration.
+
+    ![](images/Part3/image0016NoMoreSasTokenConfig.png)  
+
+
 ## Completion Check
 
 In this walkthrough, the application was set to leverage settings from a shared app configuration.  Not only are the secrets secured in Key Vault, but they are also now potentially shared across multiple applications.  This is great for things like a shared database connection, storage connections, and/or API keys, while also giving you the flexibility to create additional app configurations for developers that use shared development resources instead of production resources.
