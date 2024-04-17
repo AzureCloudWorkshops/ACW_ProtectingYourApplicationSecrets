@@ -64,7 +64,7 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
           value:workerRuntime
         }
       ]
-      netFrameworkVersion:'v6.0'
+      netFrameworkVersion:'v8.0'
       appSettings: [
           {
             name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
