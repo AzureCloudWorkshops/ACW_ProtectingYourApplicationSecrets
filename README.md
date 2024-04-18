@@ -25,6 +25,8 @@ You will need a GitHub repository to store your solution and set up CI/CD to Azu
 
 Alternatively, you could right-click and publish your solution to Azure from your desktop, but this walkthrough will focus on GitHub Actions as the deployment mechanism.
 
+>**Note:** As of February of 2024, changes in Azure App service require that you enable *SCM* deployments if you want to right-click and publish.  Additionally, the ability to publish from GitHub actions using the publish profile is affected.  As such, the recommended method is to use the GitHub Actions deployment method and create a *User-Assigned Managed Identity* for the GitHub Actions workflow, with federated credentials.
+
 ## Deploy the IAC
 
 A number of resources are needed to complete this walkthrough, and can be deployed using the templates in the `iac` folder of this repository.
@@ -39,27 +41,33 @@ Deploy the IAC using the following instructions:
 deploymentName=protecting-secrets
 loc=eastus
 templateFile=deployall.bicep
-az deployment sub create --name $deploymentName --location $loc --template-file $templateFile
+az deployment sub create --name $deploymentName --location $loc --template-file $templateFile --parameters deployAll.parameters.json
 ```
 
 ## Completion Check
 
 Before moving on, ensure that you have the following resources deployed in your Azure subscription (note, if you changed some variables in the template those changes could affect some of the naming below):  
 
+![Resources](images/Part0-Prerequisites/image0001-resources.png)  
+
 - Resource Group: RG-ProtectingYourSecrets
 - Log Analytics Workspace: LA-ProtectingYourSecrets
 - Application Insights: AI-ProtectingYourSecrets
 - App Service Plan: ASP-ProtectingYourSecrets
 - App Service: ProtectingYourSecretsWeb
+    >**Note:** You will need to manually create a user-assigned managed identity for the App Service, and assign it to the App Service (completed in part 1).  You will associate this identity for deployment by linking to github and setting the federated credentials for the GitHub Actions workflow.
 - Storage Account: protsecstorYYYYMMDDxyz
     - images container
-    - two images in the images container (manual upload)
+    - Manually upload the two images in the images container (found in the resources folder of this repository)
 - Key Vault: KV-ProtectingYourSecrets
 - App Configuration: AC-ProtectingYourSecrets
 - Azure SQL Server: ProtectingYourSecretsDBServer
 - Azure SQL Database: ProtectingYourSecretsDB
+    - Manually set the server firewall to add your ip
+    - Also make sure to allow for Azure services to access the server
+    
+    ![Resources](images/Part0-Prerequisites/image0002-setserverfirewall.png)  
 
-![Resources](images/Part0-Prerequisites/image0001-resources.png)  
 
 ## Part 1 - All the wrong things  
 

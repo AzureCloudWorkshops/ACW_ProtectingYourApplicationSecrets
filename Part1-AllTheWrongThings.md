@@ -19,26 +19,49 @@ You can either fork this repository, or just download the repository as a zip fi
 1. [Create a new GitHub Repository](https://docs.github.com/en/get-started/quickstart/create-a-repo)  
 1. [Push the starter code to the repository](https://gist.github.com/c0ldlimit/4089101) 
 
-## Both Options
+## Task 2 - Ensure the code is working
 
-With your code in your repo, publish it to Azure App Service using the following learn documentation.
+After downloading/forking/etc the code, open the solution in Visual Studio locally and run the application.  
 
-1. [Create CI/CD to publish to your Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/deploy-local-git?tabs=cli)  
+Run `update-database` in the PMC or Navigate to the link to migrate the database, which should be something like:
 
-### Completion check
+```https:
+https://localhost:7213/home/migratedatabase
+```  
+
+Ensure you can register a user and log in, which you will need to do to be able to see the images (it is assumed you have enough experience to complete this task with minimal guidance).
+
+![](images/Part1/image0000-homepagelocalaftermigrationandregisteruser.png)
+
+>**Note:** you will not see images until you configure your repo secrets for the storage account.
+
+1. Push your code to your repository
+
+Make sure the initial files are in your repo for deployment and settings updates (once again, it's assumed you can get code to your repo with minimal guidance).
+
+![Initial GitHub Files](images/Part1/image0000-repoafterinitialfilepush.png)  
+
+## Task 3 - Publish
+
+With your code in your repo, publish it to Azure App Service using the following cloud workshop as a guide to set up CI/CD:
+
+[Deploy App Service to Azure via GitHub Actions](https://github.com/AzureCloudWorkshops/ACW_DeployAppServiceToAzureViaGitHubActions)  
+
+## Task 4 - Initial setup completion check.
 
 Before moving on, ensure that you have the following:
 - A GitHub repository with the code
-- A published Azure App Service that is displaying the website but you can't register or log in because no database information is configured.  Even if you could you have not configured the storage account information yet so that part would fail.
+- A published Azure App Service that is displaying the website but you can't register or log in because no database information is configured.  Even if you could you have not configured the storage account settings yet so that part would not be useful.
 
 ![Deployed Web](images/Part1/image0001-deployedweb.png)  
-## Task 1 - Enable Repository Security tools
+
+## Task 5 - Enable Repository Security tools
 
 One of the most important things you can do to protect your secrets is to enable repository security tools.
 
 Before creating problems, you should enable the tools to alert you to potential secret leaks.
 
->**Note:** For this walkthrough you will be using your OWN repository.  To simulate this, I've created a separate repository called 'blg_acw_protectingsecrets' and will be using that for the screenshots, so don't be confused by the different repository name.
+>**Note:** For this walkthrough you will be using your OWN repository.  For that reason, do not be alarmed at the name(s) of the repository(ies) in the screenshots.  You will be using your own repository for this walkthrough, and yours will also be different.  
 
 ### Step 1 - Turn on GitHub Security
 
@@ -99,6 +122,8 @@ If you don't remember the password, use the portal to reset the password and get
 Server=tcp:protectyoursecretsdbserver20251231acw.database.windows.net,1433;Initial Catalog=ProtectYourSecretsDB;Persist Security Info=False;User ID=secretweb_user;Password=Azure#54321!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
 ```  
 
+>**note:** remember to change the password or delete the database after you are done with this walkthrough.  Adding the password into the repository is a high risk security breach, and it should be considered compromised once committed and treated as such.
+
 ![](images/Part1/image0008-connectionstringhardcoded.png)  
 
 1. Create a SAS Token for the storage account and set it in `appsettings.json`
@@ -113,7 +138,7 @@ Create the token, then copy the SAS **token** (not the full url!!) and paste it 
 
 >**Important:** You must also update the name of your storage account to the correct name of your storage account generated during the deployment.  If you fail to do this you will not get the images from the storage account container correctly.
 
-1. Optional but recommended - Get the full connection string for the App Configuration and put it into `appsettings.json`.
+1. Optional but recommended (you'll need it later anyway) - Get the full connection string for the App Configuration and put it into `appsettings.json`. 
 
 >**Note:** this will not be used until later in the walkthrough, but if you get it now you can move it along with other secrets and be ready to use it when required.
 
@@ -125,17 +150,15 @@ Your connection string should be something like (with a different secret key of 
 Endpoint=https://ac-protectingyoursecrets-20251231acw.azconfig.io;Id=co+R;Secret=4IDve......lHM=
 ```
 
-Place the connection string in the `appsettings.json` file.  Replace the `{your_connection_string}` with the connection string you just created.
+Place the connection string in the `appsettings.json` file.  Replace the `TBD` in the `ConnectionStrings:AzureAppConfigConnection` with the connection string you just copied.
 
-1. Optionally you can get the connection string for the application insights and put it into the `appsettings.json` file.  Ideally, you would use a different application insights instance for each environment, but for this walkthrough you will use the same one for all environments.  
-
->**Note:** You do not need to do this, it's completely optional.  Also note that this information is ALREADY stored in the Azure App Service if you allowed monitoring during deployment (the IAC did this for you if you ran the template).  Truly, this step is just to hook up the local environment to application insights so you can see the telemetry in the portal.
+>**Note:** if you are not destroying resources after this activity, make sure to regenerate the secret key after you are done with this walkthrough.  The secret key should be considered compromised once it is committed to the repository.  Do the same for the storage key as well.
 
 ![](images/Part1/image0011-appconfigconnectionstring.png)  
 
 Get the connection string and then put it into `appsettings.json` if you so desire.
 
-![](images/Part1/image0012-appinsightsconnectionstringsecret.png)  
+![Compromised Settings](images/Part1/image0010-verybadcompromisedsecretsinappsettings.json.png)  
 
 ## Task 3 - Push the changes to Github
 
@@ -165,27 +188,17 @@ With the website deployed, navigate to the public URL for the website and attemp
 
 ![](images/Part1/image0016-errorfornomigrations.png)
 
->**Note:** do not close the page, you will need it again in a moment.  If you did close it, you can just redo the registration once the migrations are applied.
-
-There is a bit of a chicken/egg scenario here, with the migrations endpoint requiring auth and the inability to register until you have migrations run.
-
-You could put the code in the startup to run migrations, or you can add your local IP to the server firewall and run migrations from your machine.
-
 1. Check the database firewall
 
-It's always a good idea to make sure the services can communicate.  On the server firewall (Networking) make sure to enable `Selected Networks` then check the box for the `Allow Azure services and resources to access this server` option.  Additionally, add your local IP to the firewall so you can run the migrations from your dev machine (Clearly this is **not** a production solution for migrations).
+It's always a good idea to make sure the services can communicate.  On the server firewall (Networking) make sure to enable `Selected Networks` then check the box for the `Allow Azure services and resources to access this server` option.  Additionally, add your local IP to the firewall so you can run the migrations from your dev machine or query the database if necessary (Clearly this is **not** a production solution for migrations).
 
 ![](images/Part1/image0017-allowazureandyourmachinetohitthedatabase.png)  
 
-1. Return to the code and run the migrations.
+1. Run the migrations by clicking on the link
 
-Open the Package Manager Console and run the migrations with the command:
+With the secrets hardcoded, you can do all the things, which is nice, but insecure.  You should be able to migrate the database just by hitting the link `Migrate Database`
 
-```PowerShell
-update-database
-```  
-
-Make sure the update is successful, then return to the portal and attempt to register the user again (if you still have it open, just hit f5 on the page with the error).
+1. Register the user
 
 Confirm the email or you won't be able to log in:
 
@@ -193,13 +206,39 @@ Confirm the email or you won't be able to log in:
 
 Hit the `X` on the `Thank you for Confirming` page.
 
-1. Log in as the user.
+1. Login as the user
 
-You will now see the images as expected. Additionally, you will be able to run migrations from the URL if you wanted going forward with any logged in user.
+Once you've registered the user, you should be able to log in and see the images.  If you can't see the images, you may need to run the migrations manually.
 
-![](images/Part1/image0019-everythingisworking.png)  
+Again, this is great, but bad because you've hardcoded your secrets into the repository.  This is a bad practice and should be avoided at all costs.
+
+![You can see the data!](images/Part1/image0016.5-hardcodedsecretsworkbutareverybad.png)  
 
 
+## Task 4 - Decomprosmise the secrets
 
+Because you hard coded them, now would be a great time to regenerate the keys and then validate the site is broken again.
 
+1. Rotate the connection string for the app config.  Make a note of the new connection string, but do not put it in the `appsettings.json` file.
 
+![Rotate App Config Connection String](images/Part1/image0020-rotateappconfigconnectionstring.png)  
+
+1. Change the database user password:
+
+Navigate to the server and change the password (Make sure to make a note of the new password but do not put it in the appsettings.json file).  
+
+![Change the Database Password](images/Part1/image0021-changedbpassword.png)  
+
+1. Rotate the storage account key(s)
+
+Navigate to the storage account and rotate the keys.  You will need to create a new SAS token after doing this to get the images to display again.  Make a note of the new sas token but don't put it in the `appsettings.json` file.
+
+![Rotate the Storage Account Key](images/Part1/image0022-rotatestoragekeys.png)   
+
+1. Navigate to the site.  It should not work again if all keys were successfully rotated.
+
+You will get it working again in the next steps, but for now, it should be broken.  You will see an error until you log out, then you will go back to the default view and won't be able to log in.  This is expected.
+
+## Completion Check
+
+Once everything was working and you've rotated keys (optionally/recommended), you are ready to move to the next step.

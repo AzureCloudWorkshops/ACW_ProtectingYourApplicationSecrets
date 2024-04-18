@@ -18,7 +18,7 @@ var blobEncryptionEnabled = true
 var enableBlobRetention = false
 var blobRetentionDays = 1
 
-@description('The storage account.  Toggle the public access to false if you do not want public blobs on the account in any containers')
+@description('The storage account.  Toggle the public access to true if you want public blobs on the account in any containers')
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: storageAccountNameFormatted
   location: location

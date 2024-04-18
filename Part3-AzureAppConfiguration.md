@@ -8,13 +8,31 @@ Azure App configuration has two types of key-value pairs that you can use.  The 
 
 For example, you could put the name of the storage account and the container as a shared plain text value which could be leveraged from any application.  However, the database connection and the SAS token need to be secured, so you would use a KeyVault Reference value for those.
 
-For brevity, this walkthrough will only address the KeyVault Reference values, but a shared text value would be added in the same way.
+In order to demonstrate both, we can add a shared plain text value and a KeyVault Reference value to the App Configuration.
+
+These changes will require some code changes as well, so there will be a couple of moments to get some more coffee.  
+
+A really good thought here is something like a shared API key for a service that is used across multiple applications.  This way, if the key changes, you only need to update it in one place.  The root URI for the API could be a shared, plain text value, and the API key itself could be a KeyVault Reference.
 
 1. Navigate to the App Configuration created at the start of the walkthrough.  You can find it by searching for `AC-ProtectingYourSecrets` in the Azure portal.
 
     Open the `Configuration Explorer` then select `Create` -> `Key value` to add a new key-value pair that is NOT a Key Vault reference.  
 
     ![](images/Part3/image0001-addkeyvaluepairtoappconfiguration.png)  
+
+    Add the following key-value pair:
+    - Key: `APIDetails:URI`
+    - Value: `https://somefunctionapp.azurewebsites.net/itsnotreal/example?code=notarealsiteatall`
+    - Label: [leave blank]
+    - Content Type: [leave blank]
+
+    Hit `Apply` to save the new key-value pair.  
+
+    ![](images/Part3/image0001.5-simplekvpairplaintext.png)  
+
+1. Add the database connection string and the storage account SAS token as Key Vault references.  
+
+    Select `Create` -> `Key Vault Reference` to add a new key-value pair that is a Key Vault reference.  
 
     Add the following key-value pair, using the browse option to select the appropriate secret from your Key Vault:
 
@@ -40,11 +58,13 @@ For brevity, this walkthrough will only address the KeyVault Reference values, b
 
     ![](images/Part3/image0003-newkeyvaultreferencesastoken.png)  
 
-## Task 2 - Authorize App Configuration to Access Key Vault and authorize App Service to access App Configuration as a config data reader.
+You have now set the app configuration to read from key vault and share both common and protected shared values across multiple applications.  The next step is to authorize the App Configuration to access the Key Vault.  
+
+## Task 2 - Authorize App Configuration to Access Key Vault
 
 The App configuration will also need to be authorized to connect and get Key vault Secrets.  This is done by adding an access policy to the Key Vault and a managed identity to the App Configuration.
 
-This is the same process as was done for the App Service in the previous part (part 2).  Repeat that process to 
+This is the same process as was done for the App Service in the previous part (part 2).  Repeat that process to add the App Configuration as a Key Vault access policy.
 
 1. Add a system managed identity to the App Configuration and get the Object Principal ID
 
@@ -53,6 +73,12 @@ This is the same process as was done for the App Service in the previous part (p
 1. Add an access policy to the Key Vault for the App Configuration with `Get` Secrets permissions.
 
 ![](images/Part3/image0005-appconfigurationkvgetsecrets.png)  
+
+## Task 3 - Authorize the app service to read from the app configuration  
+
+The app service must have App Configuration Data Reader permissions to read from the App Configuration.  This is done by adding a role assignment to the App Configuration for the App Service.  
+
+>**Note**: You must be `owner` or `user access administrator` on the resource group or subscription to complete this task.
 
 1. To allow the app service to read from the app configuration, the app service identity must be authorized.
 
@@ -68,7 +94,9 @@ Set the new role assignment with the following values:
 
     ![](images/Part3/image0007-AppConfigurationDataReaderRole.png)  
 
-- Members: hit the `+ Select Members` button, then paste the name of the App Service and select it, then hit `Select`
+- Select `Managed Identity` for the Assign Access to.  
+
+- Members: hit the `+ Select Members` button, then browse to get the app service:
 
     ![](images/Part3/image0008-AppServicePrincipalForRoleAssignment.png)  
 
@@ -86,84 +114,60 @@ With the app configuration in place, access to Key Vault from the app service re
 
 1. Remove the existing values for the database connection string and the SAS token from the App Service configuration settings.
 
-    First, you will need to delete the existing connections, which will break the website.  This will show that the connections are no longer working before getting them back through the shared app configuration.
+    >**NOTE:** Do not remove the app configuration connection string or you won't be able to connect and get the values.
 
-    >**Note:** In this walkthrough, both settings are going through the App Configuration.  You are easily able to mix and match.  For example, if you just want to move the SAS token or the Connection String, you could do that, and just leave the other value set directly to the Key Vault reference. 
+    First, you will need to delete the existing connections, which will break the website.  This will show that the connections are no longer working before getting them back through the shared app configuration.
 
     ![](images/Part3/image0011-referencesremoved.png)  
 
-1. Update the `AzureAppConfigConnection` value.
+    Both the database connection string and the sas token should be removed from the App Service configuration settings.
 
-    As strange as it may seem, the connection string value will not be used from the app service.  Instead, all that is needed is the URI for the Azure App Configuration.  This is because the app service will use the managed identity to access the App Configuration, and the App Configuration will use the managed identity to access the Key Vault.
-
-    The URI for the endpoint of the app configuration can be found on the overview page of the App Configuration:
-
-    ![](images/Part3/image0012-acurl.png)  
-
-    The value should be similar to:
-
-    ```text
-    https://ac-protectingyoursecrets-20251231acw.azconfig.io
-    ```  
-
-    Copy the URL and paste it for the value of the `AzureAppConfigConnection` setting in the App Service configuration settings.
-
-    ![](images/Part3/image0013-appconfigurationsettingupdated.png)  
-
-    >**Note:** the application will still currently be broken as a code update is needed to leverage the App Configuration values.  This will be done in the next task.
+    ![](images/Part3/image0011.5-nosasreferenceeither.png)  
 
 ## Task 4 - Update the code to leverage the shared values
 
 For this next part, the code needs to be updated in the Application to work against the Azure App Configuration.
 
-1. Open the `project.cs` file and add the following code.
+1. Open the project and go to the `program.cs` file. 
+
+    Find the `//TODO: Add the Azure App Configuration code here.` comment and add the following code:
 
     ```csharp  
+    var appConfigConnection = builder.Configuration.GetConnectionString("AzureAppConfigConnection");
+
     builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
     {
-        var settings = config.Build();
-
-        ////by default, use the default credential:
-        TokenCredential credential = new DefaultAzureCredential();
-        var env = settings["Application:Environment"];
-
-        //without keyvault:
-        if (env == null || !env.Trim().Equals("develop", StringComparison.OrdinalIgnoreCase))
+        config.AddAzureAppConfiguration(options =>
         {
-            //if at azure, use ManagedIdentityCredential and AppConfiguration URI endpoint
-            credential = new ManagedIdentityCredential();
-
-            config.AddAzureAppConfiguration(options =>
-                options.Connect(new Uri(settings["AzureAppConfigConnection"]), credential)
-                    .ConfigureKeyVault(kv => { kv.SetCredential(credential); }));
-        }
-        else
-        {
-            //from local app, use connection string
-            config.AddAzureAppConfiguration(options =>
-                    options.Connect(settings["AzureAppConfigConnection"])
-                            .ConfigureKeyVault(kv => { kv.SetCredential(credential); }));
-        }
+            options.Connect(appConfigConnection);
+            options.ConfigureKeyVault(options =>
+            {
+                options.SetCredential(new DefaultAzureCredential());
+            });
+        });
     });
     ```
 
-    Notice that this code uses the managed identity from the App Service to access the App Configuration, and uses the connection string directly for local development (so you could point to a second shared app config instead of the production version to easily separate concerns).  
+>**Note:** because the app configuration is now leveraging Key Vault, the configuration must configure Key Vault to use whatever the default credential is.  In this case, it is the managed identity of the App Service at Azure or your default credential if local.  
+
+If you didn't want to do key vault right away, you would need to remove the key vault references from the app configuration and just use the app configuration connection string without configuration.  This would allow you to use the app configuration without key vault.
 
 1. After updating the code, run it locally and validate that the website is working as expected.
 
     It is important to note that this code change requires your personal developer credential to have access to app config and azure key vault.  If you are the owner or contributor on the subscription you should be ok.  If not, you should add your permissions to "Get" secrets in the key vault and also be a data reader in the app config.
-
-    >**Important:** It is important to note that once you make this change your local instance will also be connected to the KeyVault database by the connection string as these settings will override even your local secrets (debug the app to see the values for the connection string).  This is why it is important to have a separate app config for local development.
-
-    To prove this out, you could now remove the connection string and sas token from your local secrets and the app will still work.
-
-    ![](images/Part3/image0014-localsecretsremovedconnectionstringandsastoken.png)  
 
 1. Push the changes to GitHub and let the application publish via CI/CD.
 
     Provided everything was completed successfully, the application should be restored to working order.
 
     ![](images/Part3/image0015-appconfigurationtokeyvaultworking.png)  
+
+1. Remove the SAS token from the `Environment Variables` in the App Service configuration settings.
+
+    Even with the token gone, you should still be able to see the images on the website.  This is because the SAS token is now being retrieved from the App Configuration.
+
+    ![](images/Part3/image0016NoMoreSasTokenConfig.png)  
+
 
 ## Completion Check
 

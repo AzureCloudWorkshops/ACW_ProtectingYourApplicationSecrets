@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "groupName": {
+            "value": "RG-ProtectingYourSecrets"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "uniqueIdentifier": {
+            "value": "20251231acw"
+        },
+        "logAnalyticsWorkspaceName": {
+            "value": "LA-ProtectingYourSecrets"
+        },
+        "appInsightsName": {
+            "value": "AI-ProtectingYourSecrets"
+        },
+        "appServicePlanName": {
+            "value": "ASP-ProtectingYourSecrets"
+        },
+        "appServiceName": {
+            "value": "ProtectingYourSecretsWeb"
+        },
+        "storageAccountName": {
+            "value": "protsecstor"
+        },
+        "imagesContainerName": {
+            "value": "images"
+        },
+        "keyVaultName": {
+            "value": "KV-ProtSec"
+        },
+        "appConfigName": {
+            "value": "AC-ProtectingYourSecrets"
+        },
+        "serverName": {
+            "value": "ProtectYourSecretsDBServer"
+        },
+        "sqlDatabaseName": {
+            "value": "ProtectYourSecretsDB"
+        },
+        "sqlServerAdminLogin": {
+            "value": "secretweb_user"
+        },
+        "sqlServerAdminPassword": {
+            "value": "Azure#54321!"
+        }
+    }
+}

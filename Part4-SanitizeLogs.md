@@ -20,7 +20,9 @@ Note that current logs contain PII for the user (id and email), the full connect
 
 For this first step, you will create code to act as a sanitizer when logs are written to `Application Insights`.  This will ensure that the logs do not contain any secrets or PII by using regular expressions to replace the values with sanitized values.
 
-For example, the current logs contain PII like the `email` for `bob@bob.com`.  For this sanitizer to work, a regular expression will replace the email with something like "[emailaddress]".  Clearly, you can choose how much of the email to replace, but the goal is to ensure that the full email is not exposed in the logs.
+For example, the current logs contain PII such as the `email` for `bob@bob.com`.  For this sanitizer to work, a regular expression will replace the email with something like "[emailaddress]".  Clearly, you can choose how much of the email to replace, but the goal is to ensure that the full email is not exposed in the logs.
+
+
 
 1. Create the `LogSanitizerInsightsInitializer` class
 
@@ -45,6 +47,11 @@ For example, the current logs contain PII like the `email` for `bob@bob.com`.  F
 
     ```csharp
     public class LogSanitizerInsightsInitializer : ITelemetryInitializer
+    ```  
+    and the using statement:
+
+    ```csharp
+    using Microsoft.ApplicationInsights.Extensibility;
     ```  
 
     ![](images/Part4/image0002-logsanitizerinitializer.png)  
@@ -154,7 +161,7 @@ To complete your sanitizer, add methods to sanitize things like the connection s
     Add the following method call to the `LogSanitizerInsightsInitializer` class `SanitizeString` method following the call to `SanitizeConnectionStringDetails`:
 
     ```csharp
-    // Sanitize connection strings
+    // Sanitize SAS Tokens
     msg = SanitizeSASToken(msg);
     ```
 
@@ -185,6 +192,3 @@ To complete your sanitizer, add methods to sanitize things like the connection s
 ## Completed Check
 
 At the end of this walkthrough, you've completed the workshop, and you now have a much more secure solution with code that is no longer exposing secrets and PII in the logs and the GitHub repository.  You also have a solution that is leveraging Azure App Configuration and Azure Key Vault to store and manage your secrets so that you can ensure only the correct users can access the information about the secrets and can create another team to be the administrators of values for your production secrets so your developers and other team members would never need to know the values of the secrets or have any access to them.
-
-
-

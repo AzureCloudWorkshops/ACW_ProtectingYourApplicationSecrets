@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using MVCProtectingSecrets.Models;
 
-namespace MVCProtectingSecrets.Data
+namespace MVCProtectingSecrets.Data;
+
+public class ApplicationDbContext : IdentityDbContext
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public DbSet<ImageDetail> ImageDetails { get; set; }
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
-        public DbSet<ImageDetail> ImageDetails { get; set; }
+    }
 
-        public ApplicationDbContext() : base() { 
-            //purposefully blank
-        }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-            //purposefully blank
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var imageCreatedDate = new DateTime(2023, 07, 21);
+            var imageCreatedDate = new DateTime(2024, 05, 01);
             //requires that you have uploaded the images to storage with the exact names:
             modelBuilder.Entity<ImageDetail>(x => x.HasData(
                 new ImageDetail() { Id = 1, AltText="Two fawns under a tree in the shade near a firepit"
@@ -37,5 +32,4 @@ namespace MVCProtectingSecrets.Data
             ));
             base.OnModelCreating(modelBuilder);
         }
-    }
 }

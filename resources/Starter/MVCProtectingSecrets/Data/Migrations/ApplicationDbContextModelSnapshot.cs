@@ -17,10 +17,51 @@ namespace MVCProtectingSecrets.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.20")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MVCProtectingSecrets.Models.ImageDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AltText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ImageDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AltText = "Two fawns under a tree in the shade near a firepit",
+                            Description = "Two fawns enjoying the shade during the heat of summer",
+                            FileName = "fawns.jpg"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AltText = "Todd Stashwick portraying Captain Liam Shaw with an expression of pain on his face and the subtitle for the spoken line: I'm just a dipshit from Chicago",
+                            Description = "Todd Stashwick gives an emmy worthy performance of PTSD in Star Trek Picard Season three episode four",
+                            FileName = "chicago.jpg"
+                        });
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -55,7 +96,7 @@ namespace MVCProtectingSecrets.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -145,7 +186,7 @@ namespace MVCProtectingSecrets.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -222,47 +263,6 @@ namespace MVCProtectingSecrets.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("MVCProtectingSecrets.Models.ImageDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("AltText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ImageDetails");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AltText = "Two fawns under a tree in the shade near a firepit",
-                            Description = "Two fawns enjoying the shade during the heat of summer",
-                            FileName = "fawns.jpg"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AltText = "Todd Stashwick portraying Captain Liam Shaw with an expression of pain on his face and the subtitle for the spoken line: I'm just a dipshit from Chicago",
-                            Description = "Todd Stashwick gives an emmy worthy performance of PTSD in Star Trek Picard Season three episode four",
-                            FileName = "chicago.jpg"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
