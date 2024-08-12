@@ -11,7 +11,6 @@ param appServicePlanName string = 'ASP-ProtectingYourSecrets'
 @maxLength(31)
 param appServiceName string = 'ProtectingYourSecretsWeb'
 
-var workerRuntime = 'dotnet'
 var webAppHostingPlan = 'F1'
 var webAppName = '${appServiceName}-${uniqueIdentifier}'
 
@@ -58,12 +57,6 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   properties: {
     serverFarmId: hostingPlan.id
     siteConfig: {
-      metadata :[
-        {
-          name:'CURRENT_STACK'
-          value:workerRuntime
-        }
-      ]
       netFrameworkVersion:'v8.0'
       appSettings: [
           {

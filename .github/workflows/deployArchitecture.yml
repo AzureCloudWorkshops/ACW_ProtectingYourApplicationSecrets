@@ -1,0 +1,50 @@
+name: "Bicep Deploy Resources"
+
+on:
+  push:
+    branches: [ mainnowayjose ]
+    paths:
+      - 'iac/**'
+  workflow_dispatch:
+
+env: 
+  CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }} 
+  TEMPLATE: 'iac/deployAll.bicep'
+  PARAMETERS: 'iac/deployAll.parameters.json'  
+  DEPLOYMENT_NAME: 'ACW_ProtectingYourApplicationSecrets'
+  REGION: 'centralus'
+  
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-architecture:
+    name: Deploy Architecture
+    runs-on: ubuntu-latest
+    environment:
+      name: 'dev'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v2.1.1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Resources
+        uses: Azure/arm-deploy@v2.0.0
+        with:
+          scope: subscription
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          region: ${{ env.REGION }}
+          template: '${{ env.TEMPLATE }}'
+          parameters: '${{ env.PARAMETERS }}'
+          deploymentName: '${{env.DEPLOYMENT_NAME}}-${{github.run_number}}'
+          failOnStdErr: true
+
+  

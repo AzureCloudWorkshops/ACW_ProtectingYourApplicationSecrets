@@ -2,7 +2,7 @@ param location string = resourceGroup().location
 @description('Provide a unique datetime and initials string to make your instances unique. Use only lower case letters and numbers')
 @minLength(11)
 @maxLength(11)
-param uniqueIdentifier string = '20251231acw'
+param uniqueIdentifier string
 
 param appConfigName string = 'AC-ProtectingYourSecrets'
 

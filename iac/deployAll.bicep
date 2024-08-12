@@ -2,12 +2,12 @@
 param groupName string = 'RG-ProtectingYourSecrets'
 
 @description('Location for deployment of the resources')
-param location string = 'eastus'
+param location string = 'centralus'
 
-@description('Provide a unique datetime and initials string to make your instances unique. Use only lower case letters and numbers')
+@description('Provide a unique datetime and initials string in the format YYYYMMDDabc to make your instances unique. Use only lower case letters and numbers')
 @minLength(11)
 @maxLength(11)
-param uniqueIdentifier string = '20251231acw'
+param uniqueIdentifier string
 
 /* web and analytics parameters*/
 @description('Name of the Log Analytics Workspace')
@@ -50,6 +50,9 @@ param sqlServerAdminLogin string = 'secretweb_user'
 @description('Admin Password for the SQL Server')
 @secure()
 param sqlServerAdminPassword string
+
+@description('Client IP Address for allow remote server connections')
+param clientIPAddress string
 
 targetScope = 'subscription'
 
@@ -117,5 +120,6 @@ module database 'azureSqlServer.bicep' = {
     sqlDatabaseName: sqlDatabaseName
     sqlServerAdminLogin: sqlServerAdminLogin
     sqlServerAdminPassword: sqlServerAdminPassword
+    clientIPAddress: clientIPAddress
   }
 }

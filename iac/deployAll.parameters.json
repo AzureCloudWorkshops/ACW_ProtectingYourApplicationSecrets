@@ -6,10 +6,10 @@
             "value": "RG-ProtectingYourSecrets"
         },
         "location": {
-            "value": "eastus"
+            "value": "centralus"
         },
         "uniqueIdentifier": {
-            "value": "20251231acw"
+            "value": "20241231acw"
         },
         "logAnalyticsWorkspaceName": {
             "value": "LA-ProtectingYourSecrets"
@@ -46,6 +46,9 @@
         },
         "sqlServerAdminPassword": {
             "value": "Azure#54321!"
+        },
+        "clientIPAddress": {
+            "value": "68.235.44.201"
         }
     }
 }
