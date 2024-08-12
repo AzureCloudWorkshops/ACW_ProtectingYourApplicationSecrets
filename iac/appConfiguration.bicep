@@ -15,3 +15,5 @@ resource configStore 'Microsoft.AppConfiguration/configurationStores@2021-10-01-
     name: 'standard'
   }
 }
+
+output appConfigName string = configStore.name

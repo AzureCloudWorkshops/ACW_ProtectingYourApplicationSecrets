@@ -77,6 +77,20 @@ module storageAccountAndContainer 'storage.bicep' = {
   }
 }
 
+module database 'azureSqlServer.bicep' = {
+  name: 'database'
+  scope: group
+  params: {
+    location: location
+    uniqueIdentifier: uniqueIdentifier
+    serverName: serverName
+    sqlDatabaseName: sqlDatabaseName
+    sqlServerAdminLogin: sqlServerAdminLogin
+    sqlServerAdminPassword: sqlServerAdminPassword
+    clientIPAddress: clientIPAddress
+  }
+}
+
 /* create web and analytics */
 module webAndAnalytics 'webAndAnalytics.bicep' = {
   name: 'webAndAnalytics'
@@ -102,6 +116,11 @@ module vault 'keyVault.bicep' = {
     uniqueIdentifier: uniqueIdentifier
     keyVaultName: keyVaultName
     keyVaultAdminObjectId: keyVaultAdminObjectId
+    sqlServerName: database.outputs.sqlServerName
+    sqlDatabaseName: database.outputs.sqlDatabaseName
+    appConfigName: appConfig.outputs.appConfigName
+    sqlAdminUsername: sqlServerAdminLogin
+    sqlAdminPassword: sqlServerAdminPassword
   }
 }
 
@@ -116,16 +135,4 @@ module appConfig 'appConfiguration.bicep' = {
   }
 }
 
-module database 'azureSqlServer.bicep' = {
-  name: 'database'
-  scope: group
-  params: {
-    location: location
-    uniqueIdentifier: uniqueIdentifier
-    serverName: serverName
-    sqlDatabaseName: sqlDatabaseName
-    sqlServerAdminLogin: sqlServerAdminLogin
-    sqlServerAdminPassword: sqlServerAdminPassword
-    clientIPAddress: clientIPAddress
-  }
-}
+
