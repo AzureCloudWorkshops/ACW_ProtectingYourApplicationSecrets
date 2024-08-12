@@ -10,6 +10,9 @@ namespace MVCProtectingSecrets
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            //TODO: Add the Azure App Configuration code here.
+
+
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -29,8 +32,7 @@ namespace MVCProtectingSecrets
 
             builder.Services.AddApplicationInsightsTelemetry();
 
-            //TODO: Add the Azure App Configuration code here.
-
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

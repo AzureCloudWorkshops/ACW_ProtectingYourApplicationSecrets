@@ -11,6 +11,9 @@ param appServicePlanName string = 'ASP-ProtectingYourSecrets'
 @maxLength(31)
 param appServiceName string = 'ProtectingYourSecretsWeb'
 
+param storageAccountName string
+param imagesContainerName string = 'images'
+
 var webAppHostingPlan = 'F1'
 var webAppName = '${appServiceName}-${uniqueIdentifier}'
 
@@ -66,6 +69,30 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
           {
             name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
             value: applicationInsights.properties.ConnectionString
+          }
+          {
+            name: 'StorageDetails:ImagesAccountName'
+            value: storageAccountName
+          }
+          {
+            name: 'StorageDetails:ImagesContainerName'
+            value: imagesContainerName
+          }
+          {
+            name: 'StorageDetails:ImagesSASToken'
+            value: 'your-sas-token-here'
+          }
+        ]
+        connectionStrings: [
+          {
+            name: 'DefaultConnection'
+            type: 'SQLAzure'
+            connectionString: 'your-db-connection-string-here'
+          }
+          {
+            name: 'AzureAppConfigConnection'
+            type: 'Custom'
+            connectionString: 'your-app-config-connection-string-here'
           }
         ]
         ftpsState: 'FtpsOnly'

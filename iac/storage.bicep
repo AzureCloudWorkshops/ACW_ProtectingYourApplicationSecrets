@@ -64,3 +64,6 @@ resource images 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-
     publicAccess: allowBlobPublicAccess ? 'Blob' : 'None'
   }
 }
+
+output storageAccountName string = storageaccount.name
+output imagesContainerName string = images.name

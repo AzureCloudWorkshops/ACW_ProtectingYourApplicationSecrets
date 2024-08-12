@@ -62,6 +62,18 @@ resource group 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   location: location
 }
 
+/* create storage account */
+module storageAccountAndContainer 'storage.bicep' = {
+  name: 'storageAccount'
+  scope: group
+  params: {
+    location: location
+    uniqueIdentifier: uniqueIdentifier
+    storageAccountName: storageAccountName
+    imagesContainerName: imagesContainerName
+  }
+}
+
 /* create web and analytics */
 module webAndAnalytics 'webAndAnalytics.bicep' = {
   name: 'webAndAnalytics'
@@ -73,18 +85,8 @@ module webAndAnalytics 'webAndAnalytics.bicep' = {
     appInsightsName: appInsightsName
     appServicePlanName: appServicePlanName
     appServiceName: appServiceName
-  }
-}
-
-/* create storage account */
-module storageAccount 'storage.bicep' = {
-  name: 'storageAccount'
-  scope: group
-  params: {
-    location: location
-    uniqueIdentifier: uniqueIdentifier
-    storageAccountName: storageAccountName
-    imagesContainerName: imagesContainerName
+    storageAccountName: storageAccountAndContainer.outputs.storageAccountName
+    imagesContainerName: storageAccountAndContainer.outputs.imagesContainerName
   }
 }
 
