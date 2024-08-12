@@ -33,6 +33,9 @@ param imagesContainerName string = 'images'
 @maxLength(13)
 param keyVaultName string = 'KV-ProtSec'
 
+@description('Provide the object id of the admin user/group that will have access to the key vault')
+param keyVaultAdminObjectId string
+
 /* app configuration parameters */
 @description('Name of the App configuration')
 param appConfigName string = 'AC-ProtectingYourSecrets'
@@ -98,6 +101,7 @@ module vault 'keyVault.bicep' = {
     location: location
     uniqueIdentifier: uniqueIdentifier
     keyVaultName: keyVaultName
+    keyVaultAdminObjectId: keyVaultAdminObjectId
   }
 }
 

@@ -32,6 +32,9 @@
         "keyVaultName": {
             "value": "KV-ProtSec"
         },
+        "keyVaultAdminObjectId": {
+            "value": "c8611ffc-9f31-46ef-a71c-04328a0be704"
+        },
         "appConfigName": {
             "value": "AC-ProtectingYourSecrets"
         },

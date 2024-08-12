@@ -8,6 +8,9 @@ param uniqueIdentifier string = '20251231acw'
 @maxLength(13)
 param keyVaultName string = 'KV-ProtSec'
 
+@description('Provide the object id of the admin user/group that will have access to the key vault')
+param keyVaultAdminObjectId string
+
 var vaultName = '${keyVaultName}-${uniqueIdentifier}'
 var skuName = 'standard'
 var softDeleteRetentionInDays = 7
@@ -26,10 +29,100 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       name: skuName
       family: 'A'
     }
-    accessPolicies: []
+    accessPolicies: [
+      {
+        tenantId: tenant().tenantId
+        objectId: keyVaultAdminObjectId
+        permissions: {
+          certificates: [
+            'Get'
+            'List'
+            'Update'
+            'Create'
+            'Import'
+            'Delete'
+            'Recover'
+            'Backup'
+            'Restore'
+            'ManageContacts'
+            'ManageIssuers'
+            'GetIssuers'
+            'ListIssuers'
+            'SetIssuers'
+            'DeleteIssuers'
+            'Purge'
+          ]
+          keys: [
+            'Get'
+            'List'
+            'Update'
+            'Create'
+            'Import'
+            'Delete'
+            'Recover'
+            'Backup'
+            'Restore'
+            'GetRotationPolicy'
+            'SetRotationPolicy'
+            'Rotate'
+            'Encrypt'
+            'Decrypt'
+            'UnwrapKey'
+            'WrapKey'
+            'Verify'
+            'Sign'
+            'Purge'
+            'Release'
+          ]
+          secrets: [
+            'Get'
+            'List'
+            'Set'
+            'Delete'
+            'Recover'
+            'Backup'
+            'Restore'
+            'Purge'
+          ]
+        }
+      }
+    ]
     networkAcls: {
       defaultAction: 'Allow'
       bypass: 'AzureServices'
+    }
+  }
+}
+
+resource KeyVault_Secret_ProtSecAppConfigConnection 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'ProtSecAppConfigConnection'
+  properties: {
+    contentType: 'string'
+    attributes: {
+      enabled: true
+    }
+  }
+}
+
+resource KeyVault_Secret_ProtSecDbConnectionString 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'ProtSecDbConnectionString'
+  properties: {
+    contentType: 'string'
+    attributes: {
+      enabled: true
+    }
+  }
+}
+
+resource KeyVault_Secret_ProtSecStorageSASToken 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'ProtSecStorageSASToken'
+  properties: {
+    contentType: 'string'
+    attributes: {
+      enabled: true
     }
   }
 }
