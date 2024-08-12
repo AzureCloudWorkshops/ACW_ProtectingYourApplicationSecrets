@@ -9,6 +9,7 @@ namespace MVCProtectingSecrets
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddHttpClient();
 
             //TODO: Add the Azure App Configuration code here.
 
