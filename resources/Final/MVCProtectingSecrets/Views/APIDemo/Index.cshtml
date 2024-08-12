@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Vehicle>
+@{
+    ViewData["Title"] = "Vehicles";
+}
+
+<h1>Vehicles</h1>
+
+<table id="contacts_table" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Make_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Make_Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model_Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Make_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Make_Name)
+                </td>
+                <td>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

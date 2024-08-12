@@ -12,6 +12,7 @@ namespace MVCProtectingSecrets
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddHttpClient();
 
             /********************************************************************************************************
             *  * Add Azure App Configuration
@@ -44,11 +45,11 @@ namespace MVCProtectingSecrets
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             //optional, turn on to auto-migrate on startup [Warning: prevents any possibility of migration rollback]
-            //var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(connectionString).Options;
-            //using (var context = new ApplicationDbContext(contextOptions))
-            //{
-            //    context.Database.Migrate();
-            //}
+            var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(connectionString).Options;
+            using (var context = new ApplicationDbContext(contextOptions))
+            {
+                context.Database.Migrate();
+            }
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
