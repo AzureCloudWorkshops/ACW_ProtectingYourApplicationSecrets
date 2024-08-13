@@ -14,18 +14,9 @@ namespace MVCProtectingSecrets
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddHttpClient();
 
-            /********************************************************************************************************
-            *  * Add Azure App Configuration
-            *  * use the connection string to connect to Azure App Configuration
-            *  * requires all app service and identity information to be authorized on app config [app data reader role, etc]
-            *  * for key vault => requires the user, app config, and app service to be authorized on the key vault
-            ********************************************************************************************************/
+            //TODO: Add the Azure App Configuration code here.
             var appConfigConnection = builder.Configuration.GetConnectionString("AzureAppConfigConnection");
 
-            //WITHOUT KEY VAULT:
-            //builder.Configuration.AddAzureAppConfiguration(appConfigConnection);
-
-            //WITH KEY VAULT:
             builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config.AddAzureAppConfiguration(options =>
@@ -54,6 +45,7 @@ namespace MVCProtectingSecrets
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+
 
             builder.Services.AddApplicationInsightsTelemetry();
             builder.Services.AddSingleton<ITelemetryInitializer, LogSanitizerInsightsInitializer>();

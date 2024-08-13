@@ -33,7 +33,7 @@ namespace MVCProtectingSecrets.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-
+                
                 var vehicles = JsonSerializer.Deserialize<AllVehicles>(data, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
