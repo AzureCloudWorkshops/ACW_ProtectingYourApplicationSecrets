@@ -95,7 +95,7 @@ One additional important step is to sanitize your logs.  This is a simple proces
 
 ## Slides
 
-If you would like, [you can download the slides](https://talkimages.blob.core.windows.net/protectingsecrets/ProtectYourSecrets.pptx)  
+If you would like, [you can review the slides here](https://training.majorguidancesolutions.com/courses/blog-posts-and-talks/contents/66baee4d031fc)  
 
 ## Conclusion
 
