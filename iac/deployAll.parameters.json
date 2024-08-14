@@ -33,7 +33,7 @@
             "value": "KV-ProtSec"
         },
         "keyVaultAdminObjectId": {
-            "value": "c8611ffc-9f31-46ef-a71c-04328a0be704"
+            "value": "your-object-id-here"
         },
         "appConfigName": {
             "value": "AC-ProtectingYourSecrets"
@@ -51,7 +51,7 @@
             "value": "Azure#54321!"
         },
         "clientIPAddress": {
-            "value": "68.235.44.201"
+            "value": "your-ip-address-here"
         }
     }
 }
